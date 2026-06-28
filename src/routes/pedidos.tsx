@@ -15,6 +15,7 @@ import { parseNFeXml, type ParsedOrder } from "@/lib/parsers/nfe";
 import { parseOrdersExcel } from "@/lib/parsers/excel-orders";
 import { importOrders, listOrders, deleteOrder } from "@/lib/orders.functions";
 import { downloadLabelsPdf, type LabelOrder } from "@/lib/labels/pdf";
+import { loadSettings } from "@/lib/labels/settings";
 
 export const Route = createFileRoute("/pedidos")({
   head: () => ({ meta: [{ title: "Pedidos · Etiquetas Pro" }] }),
@@ -37,7 +38,7 @@ function OrdersPage() {
   }
   function printOrders(list: LabelOrder[]) {
     if (!list.length) return;
-    downloadLabelsPdf(list, `etiquetas-${Date.now()}.pdf`);
+    downloadLabelsPdf(list, `etiquetas-${Date.now()}.pdf`, loadSettings());
     toast.success(`${list.length} etiqueta(s) gerada(s)`);
   }
 
