@@ -137,6 +137,39 @@ export type Database = {
         }
         Relationships: []
       }
+      print_logs: {
+        Row: {
+          created_at: string
+          filename: string | null
+          id: string
+          label_count: number
+          order_count: number
+          order_ids: string[]
+          preset: string | null
+          source: string
+        }
+        Insert: {
+          created_at?: string
+          filename?: string | null
+          id?: string
+          label_count?: number
+          order_count?: number
+          order_ids?: string[]
+          preset?: string | null
+          source?: string
+        }
+        Update: {
+          created_at?: string
+          filename?: string | null
+          id?: string
+          label_count?: number
+          order_count?: number
+          order_ids?: string[]
+          preset?: string | null
+          source?: string
+        }
+        Relationships: []
+      }
       products: {
         Row: {
           created_at: string
