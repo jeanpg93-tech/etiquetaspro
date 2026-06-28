@@ -1,10 +1,11 @@
 import { Link, Outlet, useLocation } from "@tanstack/react-router";
-import { Package, KeyRound, Tag, ShoppingCart, Settings } from "lucide-react";
+import { Package, KeyRound, Tag, ShoppingCart, Settings, History } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const nav = [
   { to: "/produtos", label: "Produtos", icon: Package },
   { to: "/pedidos", label: "Pedidos", icon: ShoppingCart },
+  { to: "/historico", label: "Histórico", icon: History },
   { to: "/api-keys", label: "API Keys", icon: KeyRound },
   { to: "/configuracoes", label: "Configurações", icon: Settings },
 ] as const;

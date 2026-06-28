@@ -14,6 +14,7 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { parseNFeXml, type ParsedOrder } from "@/lib/parsers/nfe";
 import { parseOrdersExcel } from "@/lib/parsers/excel-orders";
 import { importOrders, listOrders, deleteOrder } from "@/lib/orders.functions";
+import { createPrintLog } from "@/lib/print-logs.functions";
 import { downloadLabelsPdf, type LabelOrder } from "@/lib/labels/pdf";
 import { loadSettings } from "@/lib/labels/settings";
 
@@ -36,16 +37,29 @@ function OrdersPage() {
       return n;
     });
   }
-  function printOrders(list: LabelOrder[]) {
+  function printOrders(list: LabelOrder[], source: "batch" | "individual" = "batch") {
     if (!list.length) return;
-    downloadLabelsPdf(list, `etiquetas-${Date.now()}.pdf`, loadSettings());
+    const settings = loadSettings();
+    const filename = `etiquetas-${Date.now()}.pdf`;
+    downloadLabelsPdf(list, filename, settings);
     toast.success(`${list.length} etiqueta(s) gerada(s)`);
+    logPrint({
+      data: {
+        order_ids: list.map((o: any) => o.id).filter(Boolean),
+        order_count: list.length,
+        label_count: list.length,
+        preset: settings.preset,
+        source,
+        filename,
+      },
+    }).catch(() => {});
   }
 
   const qc = useQueryClient();
   const list = useServerFn(listOrders);
   const importFn = useServerFn(importOrders);
   const del = useServerFn(deleteOrder);
+  const logPrint = useServerFn(createPrintLog);
 
   const { data, isLoading } = useQuery({
     queryKey: ["orders"],
@@ -255,7 +269,7 @@ function OrdersPage() {
                         <TableCell className="text-right">{o.order_items?.length ?? 0}</TableCell>
                         <TableCell>
                           <div className="flex gap-1 justify-end">
-                            <Button variant="ghost" size="icon" className="h-7 w-7" title="Gerar etiqueta" onClick={() => printOrders([o])}>
+                            <Button variant="ghost" size="icon" className="h-7 w-7" title="Gerar etiqueta" onClick={() => printOrders([o], "individual")}>
                               <Printer className="h-4 w-4" />
                             </Button>
                             <Button variant="ghost" size="icon" className="h-7 w-7 text-destructive" onClick={() => setDeleteId(o.id)}>
