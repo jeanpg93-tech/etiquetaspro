@@ -8,12 +8,13 @@ export const Route = createFileRoute("/api/public/v1/products")({
         const { authenticateApiKey, jsonError } = await import("@/lib/api-auth.server");
         const auth = await authenticateApiKey(request);
         if (!auth.ok) return jsonError(auth.status, auth.message);
-        const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+        const { getSupabaseServer } = await import("@/integrations/supabase/server-client");
+        const sb = getSupabaseServer();
         const url = new URL(request.url);
         const page = Math.max(1, Number(url.searchParams.get("page") ?? "1"));
         const pageSize = Math.min(100, Math.max(1, Number(url.searchParams.get("pageSize") ?? "20")));
         const from = (page - 1) * pageSize;
-        const { data, count, error } = await supabaseAdmin
+        const { data, count, error } = await sb
           .from("products")
           .select("*", { count: "exact" })
           .order("created_at", { ascending: false })
@@ -28,11 +29,12 @@ export const Route = createFileRoute("/api/public/v1/products")({
         const body = await request.json().catch(() => null);
         const parsed = productInputSchema.safeParse(body);
         if (!parsed.success) return jsonError(400, "Validation error", parsed.error.flatten());
-        const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-        const { data: existing } = await supabaseAdmin
+        const { getSupabaseServer } = await import("@/integrations/supabase/server-client");
+        const sb = getSupabaseServer();
+        const { data: existing } = await sb
           .from("products").select("id").eq("sku", parsed.data.sku).maybeSingle();
         if (existing) return jsonError(409, `SKU "${parsed.data.sku}" already exists`);
-        const { data, error } = await supabaseAdmin
+        const { data, error } = await sb
           .from("products").insert(parsed.data).select("*").single();
         if (error) return jsonError(500, error.message);
         return Response.json({ data }, { status: 201 });
