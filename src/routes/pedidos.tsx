@@ -59,6 +59,7 @@ function OrdersPage() {
   const list = useServerFn(listOrders);
   const importFn = useServerFn(importOrders);
   const del = useServerFn(deleteOrder);
+  const logPrint = useServerFn(createPrintLog);
 
   const { data, isLoading } = useQuery({
     queryKey: ["orders"],
