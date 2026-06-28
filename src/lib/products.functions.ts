@@ -11,10 +11,11 @@ const listInput = z.object({
 export const listProducts = createServerFn({ method: "GET" })
   .inputValidator((d: unknown) => listInput.parse(d ?? {}))
   .handler(async ({ data }) => {
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { getSupabaseServer } = await import("@/integrations/supabase/server-client");
+    const sb = getSupabaseServer();
     const from = (data.page - 1) * data.pageSize;
     const to = from + data.pageSize - 1;
-    let q = supabaseAdmin
+    let q = sb
       .from("products")
       .select("*", { count: "exact" })
       .order("created_at", { ascending: false })
@@ -31,14 +32,15 @@ export const listProducts = createServerFn({ method: "GET" })
 export const createProduct = createServerFn({ method: "POST" })
   .inputValidator((d: unknown) => productInputSchema.parse(d))
   .handler(async ({ data }) => {
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const { data: existing } = await supabaseAdmin
+    const { getSupabaseServer } = await import("@/integrations/supabase/server-client");
+    const sb = getSupabaseServer();
+    const { data: existing } = await sb
       .from("products")
       .select("id")
       .eq("sku", data.sku)
       .maybeSingle();
     if (existing) throw new Error(`SKU "${data.sku}" já existe`);
-    const { data: row, error } = await supabaseAdmin
+    const { data: row, error } = await sb
       .from("products")
       .insert(data)
       .select("*")
@@ -50,10 +52,11 @@ export const createProduct = createServerFn({ method: "POST" })
 export const updateProduct = createServerFn({ method: "POST" })
   .inputValidator((d: unknown) => productUpdateSchema.parse(d))
   .handler(async ({ data }) => {
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { getSupabaseServer } = await import("@/integrations/supabase/server-client");
+    const sb = getSupabaseServer();
     const { id, ...patch } = data;
     if (patch.sku) {
-      const { data: conflict } = await supabaseAdmin
+      const { data: conflict } = await sb
         .from("products")
         .select("id")
         .eq("sku", patch.sku)
@@ -61,7 +64,7 @@ export const updateProduct = createServerFn({ method: "POST" })
         .maybeSingle();
       if (conflict) throw new Error(`SKU "${patch.sku}" já existe`);
     }
-    const { data: row, error } = await supabaseAdmin
+    const { data: row, error } = await sb
       .from("products")
       .update(patch)
       .eq("id", id)
@@ -74,8 +77,9 @@ export const updateProduct = createServerFn({ method: "POST" })
 export const deleteProduct = createServerFn({ method: "POST" })
   .inputValidator((d: unknown) => z.object({ id: z.string().uuid() }).parse(d))
   .handler(async ({ data }) => {
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const { error } = await supabaseAdmin.from("products").delete().eq("id", data.id);
+    const { getSupabaseServer } = await import("@/integrations/supabase/server-client");
+    const sb = getSupabaseServer();
+    const { error } = await sb.from("products").delete().eq("id", data.id);
     if (error) throw new Error(error.message);
     return { ok: true };
   });
