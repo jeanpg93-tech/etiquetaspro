@@ -14,6 +14,7 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { parseNFeXml, type ParsedOrder } from "@/lib/parsers/nfe";
 import { parseOrdersExcel } from "@/lib/parsers/excel-orders";
 import { importOrders, listOrders, deleteOrder } from "@/lib/orders.functions";
+import { createPrintLog } from "@/lib/print-logs.functions";
 import { downloadLabelsPdf, type LabelOrder } from "@/lib/labels/pdf";
 import { loadSettings } from "@/lib/labels/settings";
 

@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as ProdutosRouteImport } from './routes/produtos'
 import { Route as PedidosRouteImport } from './routes/pedidos'
+import { Route as HistoricoRouteImport } from './routes/historico'
 import { Route as ConfiguracoesRouteImport } from './routes/configuracoes'
 import { Route as ApiKeysRouteImport } from './routes/api-keys'
 import { Route as IndexRouteImport } from './routes/index'
@@ -25,6 +26,11 @@ const ProdutosRoute = ProdutosRouteImport.update({
 const PedidosRoute = PedidosRouteImport.update({
   id: '/pedidos',
   path: '/pedidos',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const HistoricoRoute = HistoricoRouteImport.update({
+  id: '/historico',
+  path: '/historico',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ConfiguracoesRoute = ConfiguracoesRouteImport.update({
@@ -57,6 +63,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/api-keys': typeof ApiKeysRoute
   '/configuracoes': typeof ConfiguracoesRoute
+  '/historico': typeof HistoricoRoute
   '/pedidos': typeof PedidosRoute
   '/produtos': typeof ProdutosRoute
   '/api/public/v1/products': typeof ApiPublicV1ProductsRouteWithChildren
@@ -66,6 +73,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/api-keys': typeof ApiKeysRoute
   '/configuracoes': typeof ConfiguracoesRoute
+  '/historico': typeof HistoricoRoute
   '/pedidos': typeof PedidosRoute
   '/produtos': typeof ProdutosRoute
   '/api/public/v1/products': typeof ApiPublicV1ProductsRouteWithChildren
@@ -76,6 +84,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/api-keys': typeof ApiKeysRoute
   '/configuracoes': typeof ConfiguracoesRoute
+  '/historico': typeof HistoricoRoute
   '/pedidos': typeof PedidosRoute
   '/produtos': typeof ProdutosRoute
   '/api/public/v1/products': typeof ApiPublicV1ProductsRouteWithChildren
@@ -87,6 +96,7 @@ export interface FileRouteTypes {
     | '/'
     | '/api-keys'
     | '/configuracoes'
+    | '/historico'
     | '/pedidos'
     | '/produtos'
     | '/api/public/v1/products'
@@ -96,6 +106,7 @@ export interface FileRouteTypes {
     | '/'
     | '/api-keys'
     | '/configuracoes'
+    | '/historico'
     | '/pedidos'
     | '/produtos'
     | '/api/public/v1/products'
@@ -105,6 +116,7 @@ export interface FileRouteTypes {
     | '/'
     | '/api-keys'
     | '/configuracoes'
+    | '/historico'
     | '/pedidos'
     | '/produtos'
     | '/api/public/v1/products'
@@ -115,6 +127,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   ApiKeysRoute: typeof ApiKeysRoute
   ConfiguracoesRoute: typeof ConfiguracoesRoute
+  HistoricoRoute: typeof HistoricoRoute
   PedidosRoute: typeof PedidosRoute
   ProdutosRoute: typeof ProdutosRoute
   ApiPublicV1ProductsRoute: typeof ApiPublicV1ProductsRouteWithChildren
@@ -134,6 +147,13 @@ declare module '@tanstack/react-router' {
       path: '/pedidos'
       fullPath: '/pedidos'
       preLoaderRoute: typeof PedidosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/historico': {
+      id: '/historico'
+      path: '/historico'
+      fullPath: '/historico'
+      preLoaderRoute: typeof HistoricoRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/configuracoes': {
@@ -189,6 +209,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ApiKeysRoute: ApiKeysRoute,
   ConfiguracoesRoute: ConfiguracoesRoute,
+  HistoricoRoute: HistoricoRoute,
   PedidosRoute: PedidosRoute,
   ProdutosRoute: ProdutosRoute,
   ApiPublicV1ProductsRoute: ApiPublicV1ProductsRouteWithChildren,
