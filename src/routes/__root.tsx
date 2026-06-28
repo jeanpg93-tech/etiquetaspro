@@ -85,6 +85,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { property: "og:description", content: "Geração de etiquetas para e-commerce" },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
+      { name: "twitter:title", content: "Etiquetas Pro" },
+      { name: "twitter:description", content: "Geração de etiquetas para e-commerce" },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/e7f3859d-451e-41e9-bda6-30b67ccee482/id-preview-d30c3fa5--746d8737-c856-47e1-8f89-53336ed60520.lovable.app-1782678698666.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/e7f3859d-451e-41e9-bda6-30b67ccee482/id-preview-d30c3fa5--746d8737-c856-47e1-8f89-53336ed60520.lovable.app-1782678698666.png" },
     ],
     links: [
       {
