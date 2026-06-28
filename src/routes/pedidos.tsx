@@ -269,7 +269,7 @@ function OrdersPage() {
                         <TableCell className="text-right">{o.order_items?.length ?? 0}</TableCell>
                         <TableCell>
                           <div className="flex gap-1 justify-end">
-                            <Button variant="ghost" size="icon" className="h-7 w-7" title="Gerar etiqueta" onClick={() => printOrders([o])}>
+                            <Button variant="ghost" size="icon" className="h-7 w-7" title="Gerar etiqueta" onClick={() => printOrders([o], "individual")}>
                               <Printer className="h-4 w-4" />
                             </Button>
                             <Button variant="ghost" size="icon" className="h-7 w-7 text-destructive" onClick={() => setDeleteId(o.id)}>
