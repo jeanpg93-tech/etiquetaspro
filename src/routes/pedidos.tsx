@@ -191,7 +191,22 @@ function OrdersPage() {
       )}
 
       <Card>
-        <CardHeader><CardTitle className="text-base">Pedidos importados ({data?.total ?? 0})</CardTitle></CardHeader>
+        <CardHeader className="flex flex-row items-center justify-between">
+          <CardTitle className="text-base">Pedidos importados ({data?.total ?? 0})</CardTitle>
+          {selected.size > 0 && (
+            <Button
+              size="sm"
+              onClick={() => {
+                const map = new Map(orders.map((o: any) => [o.id, o]));
+                const list: LabelOrder[] = Array.from(selected).map((id) => map.get(id)).filter(Boolean) as any;
+                printOrders(list);
+              }}
+            >
+              <Printer className="h-4 w-4 mr-2" />
+              Gerar {selected.size} etiqueta(s)
+            </Button>
+          )}
+        </CardHeader>
         <CardContent>
           {isLoading ? (
             <p className="text-sm text-muted-foreground">Carregando...</p>
@@ -201,6 +216,12 @@ function OrdersPage() {
             <Table>
               <TableHeader>
                 <TableRow>
+                  <TableHead className="w-8">
+                    <Checkbox
+                      checked={selected.size > 0 && selected.size === orders.length}
+                      onCheckedChange={(c) => setSelected(c ? new Set(orders.map((o: any) => o.id)) : new Set())}
+                    />
+                  </TableHead>
                   <TableHead className="w-8" />
                   <TableHead>Pedido</TableHead>
                   <TableHead>Origem</TableHead>
@@ -208,7 +229,7 @@ function OrdersPage() {
                   <TableHead>Cidade/UF</TableHead>
                   <TableHead>Importado em</TableHead>
                   <TableHead className="text-right">Itens</TableHead>
-                  <TableHead className="w-8" />
+                  <TableHead className="w-20" />
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -216,7 +237,10 @@ function OrdersPage() {
                   const isOpen = expanded === o.id;
                   return (
                     <>
-                      <TableRow key={o.id}>
+                      <TableRow key={o.id} data-state={selected.has(o.id) ? "selected" : undefined}>
+                        <TableCell>
+                          <Checkbox checked={selected.has(o.id)} onCheckedChange={() => toggle(o.id)} />
+                        </TableCell>
                         <TableCell>
                           <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => setExpanded(isOpen ? null : o.id)}>
                             {isOpen ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
@@ -229,13 +253,19 @@ function OrdersPage() {
                         <TableCell className="text-sm text-muted-foreground">{new Date(o.imported_at).toLocaleString("pt-BR")}</TableCell>
                         <TableCell className="text-right">{o.order_items?.length ?? 0}</TableCell>
                         <TableCell>
-                          <Button variant="ghost" size="icon" className="h-7 w-7 text-destructive" onClick={() => setDeleteId(o.id)}>
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
+                          <div className="flex gap-1 justify-end">
+                            <Button variant="ghost" size="icon" className="h-7 w-7" title="Gerar etiqueta" onClick={() => printOrders([o])}>
+                              <Printer className="h-4 w-4" />
+                            </Button>
+                            <Button variant="ghost" size="icon" className="h-7 w-7 text-destructive" onClick={() => setDeleteId(o.id)}>
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          </div>
                         </TableCell>
                       </TableRow>
                       {isOpen && (
                         <TableRow key={o.id + "-items"}>
+                          <TableCell />
                           <TableCell />
                           <TableCell colSpan={7} className="bg-muted/30">
                             <div className="text-xs space-y-1 py-2">
@@ -265,6 +295,7 @@ function OrdersPage() {
           )}
         </CardContent>
       </Card>
+
 
       <AlertDialog open={!!deleteId} onOpenChange={(o) => !o && setDeleteId(null)}>
         <AlertDialogContent>
