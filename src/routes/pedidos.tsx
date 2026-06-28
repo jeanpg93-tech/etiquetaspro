@@ -37,10 +37,22 @@ function OrdersPage() {
       return n;
     });
   }
-  function printOrders(list: LabelOrder[]) {
+  function printOrders(list: LabelOrder[], source: "batch" | "individual" = "batch") {
     if (!list.length) return;
-    downloadLabelsPdf(list, `etiquetas-${Date.now()}.pdf`, loadSettings());
+    const settings = loadSettings();
+    const filename = `etiquetas-${Date.now()}.pdf`;
+    downloadLabelsPdf(list, filename, settings);
     toast.success(`${list.length} etiqueta(s) gerada(s)`);
+    logPrint({
+      data: {
+        order_ids: list.map((o: any) => o.id).filter(Boolean),
+        order_count: list.length,
+        label_count: list.length,
+        preset: settings.preset,
+        source,
+        filename,
+      },
+    }).catch(() => {});
   }
 
   const qc = useQueryClient();
