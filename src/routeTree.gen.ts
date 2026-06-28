@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as ProdutosRouteImport } from './routes/produtos'
+import { Route as PedidosRouteImport } from './routes/pedidos'
 import { Route as ApiKeysRouteImport } from './routes/api-keys'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ApiPublicV1ProductsRouteImport } from './routes/api/public/v1/products'
@@ -18,6 +19,11 @@ import { Route as ApiPublicV1ProductsIdRouteImport } from './routes/api/public/v
 const ProdutosRoute = ProdutosRouteImport.update({
   id: '/produtos',
   path: '/produtos',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PedidosRoute = PedidosRouteImport.update({
+  id: '/pedidos',
+  path: '/pedidos',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiKeysRoute = ApiKeysRouteImport.update({
@@ -44,6 +50,7 @@ const ApiPublicV1ProductsIdRoute = ApiPublicV1ProductsIdRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/api-keys': typeof ApiKeysRoute
+  '/pedidos': typeof PedidosRoute
   '/produtos': typeof ProdutosRoute
   '/api/public/v1/products': typeof ApiPublicV1ProductsRouteWithChildren
   '/api/public/v1/products/$id': typeof ApiPublicV1ProductsIdRoute
@@ -51,6 +58,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/api-keys': typeof ApiKeysRoute
+  '/pedidos': typeof PedidosRoute
   '/produtos': typeof ProdutosRoute
   '/api/public/v1/products': typeof ApiPublicV1ProductsRouteWithChildren
   '/api/public/v1/products/$id': typeof ApiPublicV1ProductsIdRoute
@@ -59,6 +67,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/api-keys': typeof ApiKeysRoute
+  '/pedidos': typeof PedidosRoute
   '/produtos': typeof ProdutosRoute
   '/api/public/v1/products': typeof ApiPublicV1ProductsRouteWithChildren
   '/api/public/v1/products/$id': typeof ApiPublicV1ProductsIdRoute
@@ -68,6 +77,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/api-keys'
+    | '/pedidos'
     | '/produtos'
     | '/api/public/v1/products'
     | '/api/public/v1/products/$id'
@@ -75,6 +85,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/api-keys'
+    | '/pedidos'
     | '/produtos'
     | '/api/public/v1/products'
     | '/api/public/v1/products/$id'
@@ -82,6 +93,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/api-keys'
+    | '/pedidos'
     | '/produtos'
     | '/api/public/v1/products'
     | '/api/public/v1/products/$id'
@@ -90,6 +102,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   ApiKeysRoute: typeof ApiKeysRoute
+  PedidosRoute: typeof PedidosRoute
   ProdutosRoute: typeof ProdutosRoute
   ApiPublicV1ProductsRoute: typeof ApiPublicV1ProductsRouteWithChildren
 }
@@ -101,6 +114,13 @@ declare module '@tanstack/react-router' {
       path: '/produtos'
       fullPath: '/produtos'
       preLoaderRoute: typeof ProdutosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pedidos': {
+      id: '/pedidos'
+      path: '/pedidos'
+      fullPath: '/pedidos'
+      preLoaderRoute: typeof PedidosRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api-keys': {
@@ -148,6 +168,7 @@ const ApiPublicV1ProductsRouteWithChildren =
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ApiKeysRoute: ApiKeysRoute,
+  PedidosRoute: PedidosRoute,
   ProdutosRoute: ProdutosRoute,
   ApiPublicV1ProductsRoute: ApiPublicV1ProductsRouteWithChildren,
 }

@@ -47,6 +47,96 @@ export type Database = {
         }
         Relationships: []
       }
+      order_items: {
+        Row: {
+          created_at: string
+          id: string
+          order_id: string
+          product_id: string | null
+          product_name: string | null
+          quantity: number
+          sku: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          order_id: string
+          product_id?: string | null
+          product_name?: string | null
+          quantity?: number
+          sku: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          order_id?: string
+          product_id?: string | null
+          product_name?: string | null
+          quantity?: number
+          sku?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "order_items_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "order_items_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      orders: {
+        Row: {
+          created_at: string
+          id: string
+          imported_at: string
+          nfe_key: string | null
+          order_number: string
+          recipient_address: string | null
+          recipient_city: string | null
+          recipient_name: string | null
+          recipient_state: string | null
+          recipient_zip: string | null
+          source: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          imported_at?: string
+          nfe_key?: string | null
+          order_number: string
+          recipient_address?: string | null
+          recipient_city?: string | null
+          recipient_name?: string | null
+          recipient_state?: string | null
+          recipient_zip?: string | null
+          source: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          imported_at?: string
+          nfe_key?: string | null
+          order_number?: string
+          recipient_address?: string | null
+          recipient_city?: string | null
+          recipient_name?: string | null
+          recipient_state?: string | null
+          recipient_zip?: string | null
+          source?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       products: {
         Row: {
           created_at: string
