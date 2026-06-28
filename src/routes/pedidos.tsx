@@ -1,18 +1,20 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
-import { Upload, FileText, FileSpreadsheet, Trash2, ChevronDown, ChevronRight, Check, AlertCircle } from "lucide-react";
+import { Upload, FileText, FileSpreadsheet, Trash2, ChevronDown, ChevronRight, Check, AlertCircle, Printer } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { parseNFeXml, type ParsedOrder } from "@/lib/parsers/nfe";
 import { parseOrdersExcel } from "@/lib/parsers/excel-orders";
 import { importOrders, listOrders, deleteOrder } from "@/lib/orders.functions";
+import { downloadLabelsPdf, type LabelOrder } from "@/lib/labels/pdf";
 
 export const Route = createFileRoute("/pedidos")({
   head: () => ({ meta: [{ title: "Pedidos · Etiquetas Pro" }] }),
@@ -24,6 +26,20 @@ function OrdersPage() {
   const [errors, setErrors] = useState<string[]>([]);
   const [expanded, setExpanded] = useState<string | null>(null);
   const [deleteId, setDeleteId] = useState<string | null>(null);
+  const [selected, setSelected] = useState<Set<string>>(new Set());
+
+  function toggle(id: string) {
+    setSelected((s) => {
+      const n = new Set(s);
+      if (n.has(id)) n.delete(id); else n.add(id);
+      return n;
+    });
+  }
+  function printOrders(list: LabelOrder[]) {
+    if (!list.length) return;
+    downloadLabelsPdf(list, `etiquetas-${Date.now()}.pdf`);
+    toast.success(`${list.length} etiqueta(s) gerada(s)`);
+  }
 
   const qc = useQueryClient();
   const list = useServerFn(listOrders);
